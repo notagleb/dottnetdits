@@ -1,15 +1,18 @@
-import * as storage from "./products.json";
+import { ProductRepository } from "./product.repository";
 
 export class ProductService {
-    constructor () {
-    }
+
+    constructor (
+        private readonly repository: ProductRepository
+    ) {}
     
-    public getFeaturedProducts(isCustomerPreferred: boolean): Product[] {
-        const discount = isCustomerPreferred ? 0.95 : 1;
-        return storage.products.map(p => {
-            p.unitPrice *= discount;
-            return p;
-        });
+    public getFeaturedProducts(user: IPrincipal): Product[] {
+        return this
+            .repository
+            .getFeaturedProducts()
+            .filter((p: Product) => {
+                p.applyDiscountFor(user);
+            });
     }
 }
 
@@ -19,4 +22,5 @@ export interface Product {
     description: string;
     unitPrice: number;
     isFeatured: boolean;
+    applyDiscountFor(user: IPrincipal): boolean;  
 }
