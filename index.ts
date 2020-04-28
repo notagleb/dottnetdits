@@ -1,15 +1,13 @@
 import { HomeCtrl } from './home.controller';
-import { Product } from './product.service'
+import { JSONProductRepository } from './json.product.repository';
+import * as products from './products.json';
 
-const controller = new HomeCtrl();
-const productList = controller.index().map((p: Product) => {
-    return `
-    <div style="border-style: solid; margin: 2px; padding: 5px;">
-        <div>${p.description}</div>
-        <p>Name: ${p.name}</p>
-        <p>Price: $ ${p.unitPrice}</p>
-    </div>
-    `
-});
+const repository = new JSONProductRepository(products.items);
 
-document.getElementById("products").innerHTML = productList.join('');
+const controller = new HomeCtrl(repository);
+const productList = controller.index();
+
+const el = document.getElementById("products");
+if (el) {
+    el.innerHTML = productList;
+}

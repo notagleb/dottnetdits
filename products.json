@@ -1,6 +1,5 @@
 {
-    "products": [
-        {
+    "items": [{
         "productId": 1,
         "name": "Nike Free RN",
         "description": "product one",
@@ -13,6 +12,13 @@
         "description": "product two",
         "unitPrice": 33,
         "isFeatured": false
+    },
+    {
+        "productId": 3,
+        "name": "Adidas Originals",
+        "description": "product three",
+        "unitPrice": 100,
+        "isFeatured": true
     }
-]
-}
+]}
+

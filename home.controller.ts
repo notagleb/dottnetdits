@@ -1,33 +1,46 @@
-import { ProductService } from "./product.service";
+import { ProductService, IPrincipal, DomainProduct } from "./product.service";
 import { ProductRepository } from "./product.repository";
 
 export class HomeCtrl {
-    private user: any;
+    private user: IPrincipal = {};
     
     constructor(private repository: ProductRepository) {}
-    
-    // public index(): ViewResult {
-    //     const isPreferredCustomer: boolean = this.user.isInRole('PreferredCustomer') && false;
-    //     const service = new ProductService(this.repository);
-    //     const products = service.getFeaturedProducts(isPreferredCustomer);
 
-    //     return products;
-    // }
-
-    public index2(): ViewResult {
+    public index(): string {
         const productService = new ProductService(this.repository);
         const vm = new FeaturedProductsViewModel();
-        const products = service.getFeaturedProducts(isPreferredCustomer);
+        const products = productService.getFeaturedProducts(this.user);
 
-        products.forEach((p: any) => {
+        products.forEach((p: DomainProduct) => {
             const productVM = new ProductViewModel(p);
-            vm.products.add(productVM);
+            vm.products.push(productVM);
         });
 
         return View(vm);
     }
 }
 
-interface ViewResult {
-    [key: string]: any;
+const View = (vm: FeaturedProductsViewModel) => {
+    const products = vm.products.map((productModel: ProductViewModel) => productModel.asDiv());
+    return products.join('');
+}
+
+class FeaturedProductsViewModel {
+    constructor() {}
+    public products: ProductViewModel[] = [];
+}
+
+class ProductViewModel {
+    private product: DomainProduct;
+    constructor(product: DomainProduct) {
+        this.product = product;
+    }
+    public asDiv() {
+        const p = this.product;
+        return `
+     <div style="border-style: solid; margin: 2px; padding: 5px;">
+         <p>Name: ${p.name}</p>
+         <p>Price: $ ${p.unitPrice}</p>
+     </div>`
+    }
 }

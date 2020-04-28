@@ -6,21 +6,22 @@ export class ProductService {
         private readonly repository: ProductRepository
     ) {}
     
-    public getFeaturedProducts(user: IPrincipal): Product[] {
+    public getFeaturedProducts(user: IPrincipal): DomainProduct[] {
         return this
             .repository
             .getFeaturedProducts()
-            .filter((p: Product) => {
-                p.applyDiscountFor(user);
-            });
+            .filter((p: DomainProduct) => p.applyDiscountFor(user));
     }
 }
 
-export interface Product {
-    productId: number;
-    name: string;
-    description: string;
-    unitPrice: number;
-    isFeatured: boolean;
-    applyDiscountFor(user: IPrincipal): boolean;  
+export class DomainProduct {
+    public name: string = '';
+    public unitPrice: number = 0;
+    constructor() {}
+
+    public applyDiscountFor(user: IPrincipal): boolean { return true };
+}
+
+export interface IPrincipal{
+    [key: string]: any;
 }
