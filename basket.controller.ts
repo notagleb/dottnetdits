@@ -1,4 +1,4 @@
-import { CurrencyProvider } from "./currency.provider";
+import { CurrencyProvider, Currency } from "./currency.provider";
 import { IBasketService } from "./basket.service";
 import { CurrencyProfileService } from "./currency.profile.service";
 
@@ -26,7 +26,16 @@ export class BasketController {
 
     public index(): string {
         const currencyCode = this.currencyProfileService.getCurrencyCode();
-        const currency = this.currencyProvider.getCurrency(currencyCode);
-        return '';
+        const currency: Currency = this.currencyProvider.getCurrency(currencyCode);
+        
+        const basket = this.basketService
+            .getBasketFor(this.user)
+            .convertTo(currency);
+        if(basket.contents.length === 0){
+            return this.view('empty');
+        }
+
+        const vm = new BasketViewModel(basket);
+        return this.view(vm);
     }
 }
